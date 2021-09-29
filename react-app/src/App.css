@@ -1,0 +1,506 @@
+.nolabelselect {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+}
+
+.menuIcon{
+  font-size: 32px !important;
+}
+
+.searchInput{
+max-width: 320px !important;
+width:auto !important;
+display: inline !important;
+}
+
+.searchBtn{
+  margin-left: 5px;
+}
+
+.catLink{
+  color:white !important;
+}
+
+.catLink:hover{ 
+  transform: scale(1.1);
+ }
+
+ 
+.shoppingCartIcon{
+  font-size: 32px !important;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+ .adminIcon{
+  font-size: 32px !important;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.signIcon{
+  font-size: 32px !important;
+  cursor: pointer;
+}
+
+.userProfileIcon{
+  font-size: 32px !important;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-gap: 10px;
+}
+
+.badge-sc {
+  padding-left: 2px !important;
+  padding-right: 5px !important;
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+  border: 1px solid black;
+  margin-left: -20px;
+  z-index: 1001;
+}
+
+.label-warning[href],
+.badge-sc-warning[href] {
+  background-color: #c67605;
+}
+
+#lblCartCount {
+    font-size: 12px;
+    background: white;
+    color: black;
+    padding: 0 5px;
+    vertical-align: top;
+}
+
+#product-list{
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-gap: 2rem;
+}
+
+.product{
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 1rem;
+  background-color: white;
+  box-shadow: 2px 2px 6px rgb(222 222 222 / 50%), 3px 3px 8px rgb(180 180 180 / 10%);
+  flex-grow: 1;
+  cursor: pointer;
+  min-height: 332px;
+}
+
+
+.productItemImage {
+  margin-top: 8px;
+  max-height: 220px;
+  width: 100%;
+  position: relative;
+  max-width: 400px;
+  overflow: hidden;
+  border-radius: 8px;
+  min-height: 197px;
+}
+
+.productItemImage img {
+  width: 100%;
+  height: 100%;
+}
+
+.productsPagination{
+  margin-top:4px;
+}
+
+.ordersPagination{
+  margin-top:4px;
+}
+
+.promoCodesPagination{
+  margin-top:4px;
+}
+
+.productNameText{
+  font-weight: bold;
+}
+
+.productDescriptionText{
+  color:#4a4e54;
+  font-style: italic;
+  overflow: auto;
+}
+
+.nav-link .active{
+  color:black;
+  font-weight: bold;
+}
+.detailsImg{
+  width: 100%;
+  height: 100%;
+}
+
+.detailsName{
+  font-weight: bold;
+}
+
+.detailsDescription{
+  font-size: 18px;
+}
+
+.home_btn {
+  background-image: url("/src/img/home_logo.png");
+  background-repeat: no-repeat;
+  width: 48px;
+  height: 43px;
+  cursor: pointer;
+  border: none;  
+}
+
+.inStockText{
+  font-weight: bold;
+}
+
+.addToCartWrapper{
+  margin-top:8px;
+  height: 65px;
+  background-color: rgb(243,243,243);
+}
+
+.quantitySelector{
+  height: 40px;
+  width: 52px;
+  margin-top:12px;
+  margin-left:12px;
+}
+
+.addToCartBtn{
+  height: 40px;
+  width: 166px;
+  margin-top:-5px;
+  margin-left:17px;
+}
+
+.shipsForFreeText{
+  margin-left: 7px;
+}
+
+input[type=number] {
+  /*for absolutely positioning spinners*/
+  position: relative; 
+  padding: 5px;
+  padding-right: 25px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+input[type=number]::-webkit-outer-spin-button, 
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: inner-spin-button !important;
+  width: 25px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+}
+
+.shoppingCartProductImg{
+  width:50%;
+  height: 50%;
+}
+
+.shoppingCartTable{
+  width: 100%;
+}
+
+.ordersTableUser{
+  width: 70% !important;
+  margin:0 auto;
+}
+
+.ordersTable{
+  width: 85% !important;
+  margin:0 auto;
+}
+
+.promoCodesTable{
+  width: 55% !important;
+  margin:0 auto;
+}
+
+.shoppingCartDescription{
+  font-size: 16px;
+}
+
+.cartDeleteItem{
+  font-size:35px !important;
+  color:rgb(235, 20, 20);
+  cursor: pointer;
+}
+
+.cartQuantitySelector{
+  height: 40px;
+  width: 52px;
+}
+
+.orderSummaryWrapper{
+  background-color: rgb(237,237,237);
+  padding: 10px;
+}
+
+.orderSubtotalText{
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.noLinkStyle{
+  color: inherit;
+  text-decoration: none;
+}
+
+.placeOrderBtn{
+  margin-top:10px;
+  margin-bottom:10px;
+  width: 250px;
+}
+
+.errorInput
+{
+    border: 1px solid #eb516d !important;
+}
+
+.loginForm{
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.registerForm{
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.changePasswordForm{
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.changePasswordTop{
+  text-align: center;
+}
+
+.loginRegisterHomeBtn{
+  margin-left: -12px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.profileDropdown {
+  position: absolute;
+  display: inline-block;
+  margin-top:31px;
+  margin-left:-110px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.profileDropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 107px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-right: 100px;
+}
+
+/* Links inside the dropdown */
+.profileDropdown-content button {
+  color: black;
+  padding: 12px 16px;
+  display: block;
+  width: 107px;
+}
+
+/* Change color of dropdown links on hover */
+.profileDropdown-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.profileDropdownShow {display:block;}
+
+.profileDropdownMenuBtn{
+  background: none;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.profileDropdownMenuBtn:hover{
+  color:white;
+  background-color: royalblue;
+}
+
+.orderItemProductImg{
+  width: 50%;
+  height: 50%;
+}
+
+.orderItemTable{
+  width: 50% !important;
+}
+
+.promoDeleteBtn{
+  font-size: 20px !important;
+  cursor: pointer;
+}
+
+.promoCodeQuantity{
+  padding-top:2px !important;
+  margin-left:3px;
+  height: 33px;
+  width: 50px;
+}
+
+.promoCodeDiscount{
+  padding-top:2px !important;
+  margin-left:3px;
+  height: 33px;
+  width: 63px;
+}
+
+.generatePromoBtnWrapper{
+  text-align: center;
+  margin-top: 10px;
+}
+
+.spinnerImg { 
+  width:20px;
+  height: 20px;
+  margin-left:4px;
+}
+
+.promoCodeApplyWrapper{
+  margin-top:3px !important;
+  width:300px !important;
+  margin:0 auto;
+}
+
+/*fix for modal close button*/
+.close ::before{
+    content: 'X';
+    visibility: visible;
+    color: "black";
+    font-weight: bold;
+}
+
+.sr-only::before{
+    visibility: hidden;
+}
+
+.close{
+    /*background-color: red; */
+    visibility: hidden;
+    position: absolute;
+    right: 32px;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: rgb(247, 12, 12, 0.5);
+}
+/**/
+
+.productImgAdmin{
+  width: 100%;
+  height: 100%;
+}
+
+.categoryImgAdmin{
+  width: 100%;
+  height: 100%;
+}
+
+.addProductBtn{
+  font-size: 26px !important;
+  margin-top:15px;
+  cursor: pointer;
+}
+
+.addCategoryBtn{
+  font-size: 26px !important;
+  margin-top:15px;
+  cursor: pointer;
+}
+
+.td2AddProduct{
+  padding-bottom: 7px;
+ }
+
+ .td2AddCategory{
+  padding-bottom: 7px;
+ }
+
+ input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.addProductShowImg{
+  width: 100px;
+  height: 100px;
+  margin-top: 7px;
+  margin-left: 7px;
+}
+
+.addCategoryShowImg{
+  width: 100px;
+  height: 100px;
+  margin-top: 7px;
+  margin-left: 7px;
+}
+
+.editProductBtn{
+  font-size: 26px !important;
+  cursor: pointer;
+}
+
+.deleteProductBtn{
+  margin-left: 3px;
+  font-size: 26px !important;
+  cursor: pointer;
+}
+
+.editCategoryBtn{
+  font-size: 26px !important;
+  cursor: pointer;
+}
+
+.deleteCategoryBtn{
+  margin-left: 3px;
+  font-size: 26px !important;
+  cursor: pointer;
+}
