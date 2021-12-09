@@ -7,22 +7,6 @@ export const categoryReducer = (storeData, action) => {
             return {
                 ...storeData, [action.payload.dataType]: action.payload.data
             }
-        case ACTION_TYPES.CATEGORY_GET:
-            return {
-                ...storeData, [action.payload.dataType]: action.payload.data
-            }
-        case ACTION_TYPES.CATEGORY_CREATE:
-            return {
-                ...storeData, [action.payload.dataType]: action.payload.data
-            }
-        case ACTION_TYPES.CATEGORY_UPDATE:
-            return {
-                ...storeData, [action.payload.dataType]: action.payload.data
-            }
-        case ACTION_TYPES.CATEGORY_DELETE:
-            return {
-                ...storeData, [action.payload.dataType]: action.payload.data
-            }
         default:
             return storeData || {};
     }

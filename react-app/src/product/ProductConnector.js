@@ -178,7 +178,7 @@ export const ProductConnector = connect(mapStateToProps, mapDispatchToProps)(
 
 
         handleGetProduct = (id, callback) => {
-            this.props.getProduct(DataTypes.PRODUCTS, id, callback);
+            this.props.getProduct(DataTypes.PRODUCT, id, callback);
         }
 
         handleSetSelectedCategoryId = (categoryId) => {

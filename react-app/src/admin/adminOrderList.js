@@ -12,7 +12,7 @@ export const AdminOrderList = class extends Component {
 
     shipOrder = (id) => {
         order().ship(id)
-            .then((response) => {
+            .then(() => {
                 this.handlePageIndexChangedOrders(this.state.selectedPageIndex, false);
             });
     }
