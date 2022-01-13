@@ -181,6 +181,7 @@ display: inline !important;
   width: 52px;
   margin-top:12px;
   margin-left:12px;
+  padding-right: 2px !important;
 }
 
 .addToCartBtn{
@@ -378,6 +379,7 @@ input[type=number]::-webkit-inner-spin-button {
   margin-left:3px;
   height: 33px;
   width: 50px;
+  padding-right: 2px !important;
 }
 
 .promoCodeDiscount{
@@ -385,6 +387,7 @@ input[type=number]::-webkit-inner-spin-button {
   margin-left:3px;
   height: 33px;
   width: 63px;
+  padding-right: 2px !important;
 }
 
 .generatePromoBtnWrapper{

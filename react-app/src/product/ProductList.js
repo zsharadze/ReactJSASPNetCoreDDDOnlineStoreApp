@@ -106,12 +106,12 @@ export class ProductList extends Component {
                                             <button href="#" className="nav-link align-middle px-0 catLink">
                                                 {item.faClass &&
                                                     <React.Fragment>
-                                                        <i className={item.faClass + " menuIcon"}></i><span className={"ms-1 d-none d-sm-inline" + (this.props.selectedCategoryId === item.id ? " active" : "")} onClick={() => this.changeCategory(item.id, item.name)}>{item.name}</span>
+                                                        <i className={item.faClass + " menuIcon"} onClick={() => this.changeCategory(item.id, item.name)}></i><span className={"ms-1 d-none d-sm-inline" + (this.props.selectedCategoryId === item.id ? " active" : "")} onClick={() => this.changeCategory(item.id, item.name)}>{item.name}</span>
                                                     </React.Fragment>
                                                 }
                                                 {item.imageSrc &&
                                                     <React.Fragment>
-                                                        <img src={"data:image/jpeg;base64," + item.imageSrc}  style={{ border: "1", width: "40px", height: "40px" }} alt="productImage"/> <span className={"ms-1 d-none d-sm-inline" + (this.props.selectedCategoryId === item.id ? " active" : "")} onClick={() => this.changeCategory(item.id, item.name)}>{item.name}</span>
+                                                        <img src={"data:image/jpeg;base64," + item.imageSrc}  style={{ border: "1", width: "40px", height: "40px" }} alt="productImage" onClick={() => this.changeCategory(item.id, item.name)}/> <span className={"ms-1 d-none d-sm-inline" + (this.props.selectedCategoryId === item.id ? " active" : "")} onClick={() => this.changeCategory(item.id, item.name)}>{item.name}</span>
                                                     </React.Fragment>
                                                 }
                                             </button>
