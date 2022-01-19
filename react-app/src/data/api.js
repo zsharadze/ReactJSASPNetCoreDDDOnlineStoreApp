@@ -10,9 +10,9 @@ export const product = () => {
     if (token != null) {
         axios.defaults.headers.common['Authorization'] = "Bearer " + token;
     }
-    
+
     return {
-        getAll: (categoryId, pageIndex, searchText) => axios.get(url + `getall?categoryId=${categoryId ? categoryId : ""}&pageSize=${pageSize}&pageIndex=${pageIndex ? pageIndex : ""}&searchText=${searchText ? searchText : ""}`),
+        getAll: (categoryId, pageIndex, searchText) => axios.get(url + `getall?categoryId=${categoryId ? categoryId : ""}&pageSize=${pageSize}${pageIndex ? "&pageIndex=" + pageIndex : ""}&searchText=${searchText ? searchText : ""}`),
         getById: id => axios.get(url + "details/?id=" + id),
         create: (newRecord) => {
             return axios({
@@ -35,7 +35,7 @@ export const category = () => {
     }
 
     return {
-        getAll: () => axios.get(url + 'getall'),
+        getAll: (pageIndex, pageSizePar, searchText) => axios.get(url + `getall?${pageSizePar ? "pageSize=" + pageSizePar : ""}${pageIndex ? "&pageIndex=" + pageIndex : ""}&searchText=${searchText ? searchText : ""}`),
         getById: id => axios.get(url + "details/?id=" + id),
         create: newRecord => axios.post(url + "create", newRecord),
         update: (updateRecord) => axios.put(url + "edit", updateRecord),
@@ -51,8 +51,8 @@ export const order = () => {
     }
 
     return {
-        getAll: (pageIndex) => axios.get(url + `getall?pageSize=${pageSize}&pageIndex=${pageIndex ? pageIndex : ""}`),
-        getAllForCurrentUser: (pageIndex) => axios.get(url + `GetallforcurrentUser?pageSize=${pageSize}&pageIndex=${pageIndex ? pageIndex : ""}`),
+        getAll: (pageIndex) => axios.get(url + `getall?pageSize=${pageSize}${pageIndex ? "&pageIndex=" + pageIndex : ""}`),
+        getAllForCurrentUser: (pageIndex) => axios.get(url + `GetallforcurrentUser?pageSize=${pageSize}${pageIndex ? "&pageIndex=" + pageIndex : ""}`),
         create: (orderItems, promoCode) => {
             return axios({
                 method: "post",
@@ -73,7 +73,7 @@ export const promoCode = () => {
     }
 
     return {
-        getAll: (pageIndex, searchText) => axios.get(url + `getall?pageSize=${pageSize}&pageIndex=${pageIndex ? pageIndex : ""}&searchText=${searchText ? searchText : ""}`),
+        getAll: (pageIndex, searchText, getOnlyUsed) => axios.get(url + `getall?pageSize=${pageSize}${pageIndex ? "&pageIndex=" + pageIndex : ""}&searchText=${searchText ? searchText : ""}${getOnlyUsed ? "&getOnlyUsed=true" : ""}`),
         generate: (quantity, discount) => axios.post(url + 'generatepromocodes/?quantity=' + quantity + '&discount=' + discount),
         delete: (id) => axios.delete(url + 'delete/?id=' + id),
         getByPromoCodeText: (promoCodeText) => axios.get(url + 'getbypromocodetext/?promoCodeText=' + promoCodeText),
@@ -94,3 +94,14 @@ export const changePassword = (changePasswordModel) => {
         headers: { "Content-Type": "application/json" }
     });
 }
+
+export const getAuthenticatedUserAndRole = () => {
+    let url = getAuthenticatedUserAndRole;
+    let token = localStorage.getItem('token');
+    if (token != null) {
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+    }
+
+    return axios.get(url);
+}
+

@@ -1,11 +1,20 @@
 import React, { Component } from "react";
 import moment from "moment";
+import spinnerImg from '../img/spinner.gif';
 
 
 export const AdminProductList = class extends Component {
-    
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            hideLodingImg: true,
+        };
+    }
+
     handlePageIndexChangedProducts = (pageIndex) => {
-        this.props.pageIndexChangedProducts(null, pageIndex, null);
+        this.setState({ hideLodingImg: false });
+        this.props.pageIndexChangedProducts(null, pageIndex, null, () => { this.setState({ hideLodingImg: true }) });
         window.scrollTo(0, 0);
     }
 
@@ -24,9 +33,9 @@ export const AdminProductList = class extends Component {
         }
 
         return (
-        <React.Fragment>
+            <React.Fragment>
                 <i title="Add Product" className="fa fa-plus addProductBtn" aria-hidden="true" onClick={() => this.props.AddProductClick()}></i>
-
+                <img className={"float-end spinnerImgAdminPaging" + (this.state.hideLodingImg ? " d-none" : "")} src={spinnerImg} alt="loading" />
                 <table className="table">
                     <thead>
                         <tr>

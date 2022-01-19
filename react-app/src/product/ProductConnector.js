@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { getProducts, getCategories, getProduct, getOrdersByUser, getOrders, getPromoCodes } from "../data/ActionCreators";
 import { DataTypes } from "../data/Types";
@@ -13,6 +13,8 @@ import { RegisterPrompt } from "../auth/registerPrompt";
 import { ChangePasswordPrompt } from "../auth/changePasswordPrompt";
 import { OrderPlaced } from "../shoppingCart/orderPlaced";
 import { MyOrders } from "../profile/myOrders";
+import { withRouter } from "../common/withRouter";
+import { authWrapper } from "../auth/AuthWrapper";
 
 const mapStateToProps = (dataStore) => ({
     ...dataStore
@@ -22,7 +24,7 @@ const mapDispatchToProps = {
     getProducts, getCategories, getProduct, getOrdersByUser, getOrders, getPromoCodes
 }
 
-export const ProductConnector = connect(mapStateToProps, mapDispatchToProps)(
+export const ProductConnector = authWrapper(withRouter(connect(mapStateToProps, mapDispatchToProps)(
     class extends Component {
         constructor(props) {
             super(props);
@@ -47,45 +49,48 @@ export const ProductConnector = connect(mapStateToProps, mapDispatchToProps)(
         render() {
             return (
                 <CommonProvider value={this.state}>
-                    <Switch>
+                    <Routes>
                         <Route path="/details"
-                            render={(routeProps) =>
-                                <ProductDetails {...this.props} getProduct={this.handleGetProduct} location={this.props.location} addToCart={this.handleAddToCart} />} />
+                            element={<ProductDetails {...this.props} location={this.props.location} addToCart={this.handleAddToCart} />} />
                         <Route path="/shoppingcart"
-                            render={(routeProps) =>
-                                <ShoppingCart {...this.props} getProduct={this.handleGetProduct} changeQuantity={this.handleChangeQuantityInCart} deleteItem={this.handleDeleteItemFromCart} location={this.props.location} />} />
-                        <Route path="/admin"
-                            render={(routeProps) =>
-                                <AdminMain {...this.props} getProducts={this.props.getProducts} getPromoCodes={this.props.getPromoCodes} pageIndexChangedOrders={this.handleGetOrdersByPage} pageIndexChangedPromoCodes={this.handleGetPromoCodesByPage} pageIndexChangedProducts={this.handleChangePageIndexProducts} />} />
+                            element={
+                                <ShoppingCart {...this.props} changeQuantity={this.handleChangeQuantityInCart} deleteItem={this.handleDeleteItemFromCart} location={this.props.location} />} />
+                        <Route
+                            path="/admin"
+                            element={
+                                <RequireAuth redirectTo="/login?needAdminLogin=true" copyProps={this.props}>
+                                    <AdminMain {...this.props} getProducts={this.props.getProducts} getPromoCodes={this.props.getPromoCodes} pageIndexChangedOrders={this.handleGetOrdersByPage} pageIndexChangedPromoCodes={this.handleGetPromoCodesByPage} pageIndexChangedProducts={this.handleChangePageIndexProducts} pageIndexChangedCategories={this.handleChangePageIndexCategories} />
+                                </RequireAuth>
+                            }
+                        />
                         <Route path="/login"
-                            render={(routeProps) =>
-                                <LoginPrompt />} />
+                            element={
+                                <LoginPrompt {...this.props} />} />
                         <Route path="/register"
-                            render={(routeProps) =>
+                            element={
                                 <RegisterPrompt />} />
                         <Route path="/changepassword"
-                            render={(routeProps) =>
+                            element={
                                 <ChangePasswordPrompt />} />
                         <Route path="/orderplaced"
-                            render={(routeProps) =>
+                            element={
                                 <OrderPlaced />} />
                         <Route path="/myorders"
-                            render={(routeProps) =>
-                                <MyOrders {...this.props} />} />
-                        <Route path={["/products", "/"]}
-                            render={(routeProps) =>
-                                <ProductList {...this.props} searchValue={this.state.searchValue} setSearchValue={this.handleSetSearchValue} selectedCategoryId={this.state.selectedCategoryId} changeFilterValues={this.handleChangeFilterValues} setSelectedCategoryId={this.handleSetSelectedCategoryId} />} />
-                    </Switch>
+                            element={<MyOrders {...this.props} />} />
+                        {["/products/*", "/*"].map((path, index) =>
+                            <Route key={index} path={path} element={<ProductList {...this.props} searchValue={this.state.searchValue} setSearchValue={this.handleSetSearchValue} selectedCategoryId={this.state.selectedCategoryId} changeFilterValues={this.handleChangeFilterValues} setSelectedCategoryId={this.handleSetSelectedCategoryId} />} />
+                        )}
+                    </Routes>
                 </CommonProvider>
             )
         }
 
         handleGoToOrders = () => {
-            this.props.history.push("/myorders");
+            this.props.history("/myorders");
         }
 
         handleGoToChangePassword = () => {
-            this.props.history.push("/changepassword");
+            this.props.history("/changepassword");
         }
 
         handleAddToCart = (id, quantity) => {
@@ -139,7 +144,7 @@ export const ProductConnector = connect(mapStateToProps, mapDispatchToProps)(
         }
 
         handleGoToHome = () => {
-            this.props.history.push("/");
+            this.props.history("/");
             this.setState({
                 selectedCategoryId: 0,
                 searchValue: ""
@@ -148,7 +153,7 @@ export const ProductConnector = connect(mapStateToProps, mapDispatchToProps)(
         }
 
         handleGoToShoppingCart = () => {
-            this.props.history.push("/shoppingcart");
+            this.props.history("/shoppingcart");
         }
 
         handleSetSearchValue = (value) => {
@@ -162,29 +167,33 @@ export const ProductConnector = connect(mapStateToProps, mapDispatchToProps)(
         }
 
         //admin
-        handleGetPromoCodesByPage = (pageIndex) => {
-            this.props.getPromoCodes(DataTypes.PROMOCODES, pageIndex);
+        handleGetPromoCodesByPage = (pageIndex, showOnlyUsed) => {
+            this.props.getPromoCodes(DataTypes.PROMOCODES, pageIndex, "", showOnlyUsed);
         }
 
         //admin
-        handleChangePageIndexProducts = (categoryId, pageIndex, searchText) => {
-            this.props.getProducts(DataTypes.PRODUCTS, categoryId, pageIndex, searchText);
+        handleChangePageIndexProducts = (categoryId, pageIndex, searchText, callback) => {
+            this.props.getProducts(DataTypes.PRODUCTS, categoryId, pageIndex, searchText, callback);
         }
 
-        handleChangeFilterValues = (categoryId, pageIndex, searchText) => {
-            this.props.getProducts(DataTypes.PRODUCTS, categoryId, pageIndex, searchText);
+        //admin
+        handleChangePageIndexCategories = (pageIndex, searchText, callback) => {
+            this.props.getCategories(DataTypes.CATEGORIES, pageIndex, 10, searchText, callback);
         }
 
-
-
-        handleGetProduct = (id, callback) => {
-            this.props.getProduct(DataTypes.PRODUCT, id, callback);
+        handleChangeFilterValues = (categoryId, pageIndex, searchText, callback) => {
+            this.props.getProducts(DataTypes.PRODUCTS, categoryId, pageIndex, searchText, callback);
         }
 
         handleSetSelectedCategoryId = (categoryId) => {
             this.setState(
                 { selectedCategoryId: categoryId });
         }
-
     }
-)
+)))
+
+
+function RequireAuth({ children, redirectTo, props }) {
+    let isAdminAuthenticated = localStorage.getItem('isAuthenticated') && localStorage.getItem('userRole') === "Admin";
+    return isAdminAuthenticated ? children : <Navigate to={redirectTo} {...props} />;
+}

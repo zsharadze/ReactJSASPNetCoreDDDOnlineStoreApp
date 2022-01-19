@@ -33,8 +33,8 @@ export const AdminOrderList = class extends Component {
         let trs = [];
         orderItems.forEach(element => {
             trs.push(<tr key={element.id}>
-                <td onClick={() => this.props.history.push("details/?id=" + element.id)}><img className="orderItemProductImg" src={"data:image/jpeg;base64," + element.product.imageSrc} alt={element.productId} style={{ cursor: "pointer" }} /></td>
-                <td onClick={() => this.props.history.push("details/?id=" + element.id)} style={{ cursor: "pointer" }} className="shoppingCartDescription"><span className="productNameText">{element.product.name}</span><br />{element.product.description}</td>
+                <td onClick={() => this.props.history("details/?id=" + element.id)}><img className="orderItemProductImg" src={"data:image/jpeg;base64," + element.product.imageSrc} alt={element.productId} style={{ cursor: "pointer" }} /></td>
+                <td onClick={() => this.props.history("details/?id=" + element.id)} style={{ cursor: "pointer" }} className="shoppingCartDescription"><span className="productNameText">{element.product.name}</span><br />{element.product.description}</td>
                 <td><h4>{element.product.price}$</h4></td>
                 <td><h3>{element.quantity}</h3></td>
             </tr>);

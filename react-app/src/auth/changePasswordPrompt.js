@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
 import { authWrapper } from "./AuthWrapper";
 import { HomeBtn } from "../common/homeBtn";
 import { changePassword } from '../data/api';
 
-export const ChangePasswordPrompt = withRouter(authWrapper(class extends Component {
+export const ChangePasswordPrompt = authWrapper(class extends Component {
     constructor(props) {
         super(props);
 
@@ -120,4 +119,4 @@ export const ChangePasswordPrompt = withRouter(authWrapper(class extends Compone
                 </div>
             </div>
         </div>
-}))
+})

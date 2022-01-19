@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "../common/withRouter";
 import { HomeBtn } from "../common/homeBtn";
 import CommonContext from '../common/commonContext';
 
@@ -9,12 +9,12 @@ export const OrderPlaced = withRouter(class extends Component {
     handleBackToProducts = (event) => {
         this.context.clearShoppingCart();
         this.context.goToHomePath();
-        
+
     };
 
     handleGoTOMyOrders = (event) => {
         this.context.clearShoppingCart();
-        this.props.history.push("/myorders")
+        this.props.history("/myorders")
     };
 
     componentWillUnmount() {
@@ -36,7 +36,7 @@ export const OrderPlaced = withRouter(class extends Component {
                     </h4>
                     <div className="text-center text-white m-1 p-2">
                         <button type="button" className="btn btn-primary" onClick={() => this.handleBackToProducts()} >Back to products</button>
-                        <br/>
+                        <br />
                         <button type="button" className="btn btn-primary mt-1" onClick={() => this.handleGoTOMyOrders()}>My Orders</button>
                     </div>
                 </div>

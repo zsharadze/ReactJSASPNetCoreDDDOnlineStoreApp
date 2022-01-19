@@ -1,27 +1,26 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
-import "bootstrap/dist/css/bootstrap.css";
-import "font-awesome/css/font-awesome.min.css";
 import { TopMenuIcons } from "../common/topmenuicons";
 import { HomeBtn } from "../common/homeBtn";
 import { DataTypes } from "../data/Types";
+import spinnerImgMain from '../img/spinner-main.gif';
+import spinnerImgSearch from '../img/spinner-search.gif';
+import spinnerImg from '../img/spinner.gif';
+
 
 export class ProductList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchPlaceHolder: "Search products..."
+            searchPlaceHolder: "Search products...",
+            hideCategoryLodingImg: true,
+            hideSearchLodingImg: true
         };
     }
 
     componentDidMount = () => {
         this.props.getProducts(DataTypes.PRODUCTS);
-        this.props.getCategories(DataTypes.CATEGORIES);
-    }
-
-    handleChangeCategory = (event) => {
-        this.props.setSelectedCategoryId(event.target.value);
-        this.props.changeFilterValues(event.target.value, 1, this.props.searchValue);
+        this.props.getCategories(DataTypes.CATEGORIES, 1, null);
     }
 
     handlePageIndexChanged = (pageIndex) => {
@@ -31,7 +30,8 @@ export class ProductList extends Component {
 
     handleSearchChange = (event) => {
         this.props.setSearchValue(event.target.value);
-        this.props.changeFilterValues(this.props.selectedCategoryId, 1, event.target.value);
+        this.setState({ hideSearchLodingImg: false });
+        this.props.changeFilterValues(this.props.selectedCategoryId, 1, event.target.value, () => { this.setState({ hideSearchLodingImg: true }); });
     }
 
     handleSearch = () => {
@@ -46,18 +46,20 @@ export class ProductList extends Component {
 
     changeCategory = (categoryid, categoryName) => {
         this.props.setSelectedCategoryId(categoryid);
+        this.setState({ hideCategoryLodingImg: false });
         if (categoryid !== 0) {
-            this.props.history.push("/?category=" + categoryid);
-            this.props.changeFilterValues(categoryid, 1, null);
+            this.props.history("/?category=" + categoryid);
+            this.props.changeFilterValues(categoryid, 1, null, () => { this.setState({ hideCategoryLodingImg: true }); })
         }
         else {
-            this.props.changeFilterValues(null, 1, null);
-            this.props.history.push("/");
+            this.props.changeFilterValues(null, 1, null, () => { this.setState({ hideCategoryLodingImg: true }); });
+            this.props.history("/");
         }
 
         this.setState(
             { searchPlaceHolder: "Search " + categoryName + "..." });
-            this.props.setSearchValue("");
+        this.props.setSearchValue("");
+        window.scrollTo(0, 0);
     }
 
     render() {
@@ -80,8 +82,8 @@ export class ProductList extends Component {
                     <div className="col-md-12 text-center">
                         <HomeBtn />
                         <input className="form-control searchInput" type="search" placeholder={this.state.searchPlaceHolder} aria-label="Search" onKeyPress={this.handleEnterKey} onChange={this.handleSearchChange} value={this.props.searchValue} />
-                        <span className="input-group-btn searchBtn">
-                            <button className="btn btn-outline-success" type="button" onClick={this.handleSearch}>Search</button>
+                        <span className="input-group-btn searchBtnGroup">
+                            <button className="btn btn-outline-success searchBtn" type="button" onClick={this.handleSearch}>{this.state.hideSearchLodingImg && "Search"}{<img className={"spinnerImgSearch" + (this.state.hideSearchLodingImg ? " d-none" : "")} src={spinnerImgSearch} alt="loading" />}</button>
                         </span>
                         <TopMenuIcons />
                     </div>
@@ -91,6 +93,7 @@ export class ProductList extends Component {
                         <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                             <span className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                                 <span className="fs-5 d-none d-sm-inline">Categories</span>
+                                <img className={"spinnerImgCategory" + (this.state.hideCategoryLodingImg ? " d-none" : "")} src={spinnerImg} alt="loading" />
                             </span>
                             <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start leftMenu" id="menu">
 
@@ -100,7 +103,7 @@ export class ProductList extends Component {
                                     </button>
                                 </li>
 
-                                {this.props.categories && this.props.categories.map((item, i) => {
+                                {this.props.categories && this.props.categories.categoryList && this.props.categories.categoryList.map((item, i) => {
                                     return (
                                         <li key={item.id} className="nav-item">
                                             <button href="#" className="nav-link align-middle px-0 catLink">
@@ -111,7 +114,7 @@ export class ProductList extends Component {
                                                 }
                                                 {item.imageSrc &&
                                                     <React.Fragment>
-                                                        <img src={"data:image/jpeg;base64," + item.imageSrc}  style={{ border: "1", width: "40px", height: "40px" }} alt="productImage" onClick={() => this.changeCategory(item.id, item.name)}/> <span className={"ms-1 d-none d-sm-inline" + (this.props.selectedCategoryId === item.id ? " active" : "")} onClick={() => this.changeCategory(item.id, item.name)}>{item.name}</span>
+                                                        <img src={"data:image/jpeg;base64," + item.imageSrc} style={{ border: "1", width: "40px", height: "40px" }} alt="productImage" onClick={() => this.changeCategory(item.id, item.name)} /> <span className={"ms-1 d-none d-sm-inline" + (this.props.selectedCategoryId === item.id ? " active" : "")} onClick={() => this.changeCategory(item.id, item.name)}>{item.name}</span>
                                                     </React.Fragment>
                                                 }
                                             </button>
@@ -134,6 +137,9 @@ export class ProductList extends Component {
                                     </Link>
                                 );
                             })}
+                            {(!this.props.products || !this.props.products.productList) &&
+                                <img className="contentCenter" src={spinnerImgMain} alt="loading" />
+                            }
                         </div>
                         <div className="productsPagination">
                             {this.props.products && this.props.products.pager &&
@@ -166,7 +172,7 @@ export class ProductList extends Component {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         )
     }
 }

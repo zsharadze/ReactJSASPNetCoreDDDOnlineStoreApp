@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { withRouter, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { withRouter } from "../common/withRouter";
 import CommonContext from '../common/commonContext';
 import { authWrapper } from "../auth/AuthWrapper";
 
@@ -54,7 +55,7 @@ export const TopMenuIcons = withRouter(authWrapper(class extends Component {
                             </div>
                         </span>
                     }
-                    <span className="float-end"><i title="Administration" className="fa fa-wrench adminIcon" onClick={() => this.props.history.push("/admin")}></i></span>
+                    <span className="float-end"><i title="Administration" className="fa fa-wrench adminIcon" onClick={() => this.props.history("/admin")}></i></span>
                     <span className="float-end"><Link to="/shoppingcart" className="noLinkStyle"><i title="Shopping Cart" className="fa fa-shopping-cart shoppingCartIcon"></i><span className='badge-sc badge-sc-warning' id='lblCartCount'> {this.context.shoppingCart.length}</span></Link></span>
                 </span>
 

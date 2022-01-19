@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
 import { authWrapper } from "../auth/AuthWrapper";
 import { DataTypes } from "../data/Types";
 import { HomeBtn } from "../common/homeBtn";
@@ -15,19 +14,25 @@ import { AdminPromoCodeList } from './adminPromoCodeList';
 import { AdminOrderList } from './adminOrderList';
 import { AdminCategoryList } from './adminCategoryList';
 import { AlertPopupOk } from "../common/alertPopupOk";
-
-export const AdminMain = withRouter(authWrapper(class extends Component {
+import spinnerImg from '../img/spinner.gif';
+export const AdminMain = authWrapper(class extends Component {
     static contextType = CommonContext;
 
     constructor(props) {
         super(props);
         this.state = {
             addProductShow: false,
+            addCategoryShow: false,
             alertConfirmDeleteProductShow: false,
             deleteProductIdAfterConfirm: null,
             alertConfirmDeleteCategoryShow: false,
             deleteCategoryIdAfterConfirm: null,
             alertCantDeleteCategoryShow: false,
+            alertNudeImagePopupShow: false,
+            alertNudeImagePopupIsFemale: true,
+            alertBigImageUploadErrorPopupShow: false,
+            notAuthorized: false,
+            hideLodingImgOnSave: true,
             addEditProduct: {
                 id: 0,
                 name: "",
@@ -49,12 +54,7 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.isAuthenticated || this.props.userRole !== "Admin") {
-            this.props.history.push("/login/?needAdminLogin=true");
-        }
-        else {
-            this.props.pageIndexChangedOrders(1);
-        }
+        this.props.pageIndexChangedOrders(1);
     }
 
     handleAddProductChangeName = (event) => {
@@ -122,16 +122,46 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
         }
 
         if (this.state.addEditProduct.id === 0) {
+            this.setState({ hideLodingImgOnSave: false });
             product().create(productToAdd).then((res) => {
-                if (res.data !== 0) {
+                this.setState({ hideLodingImgOnSave: true });
+                if (res.data === -500) {
+                    this.setState({ alertBigImageUploadErrorPopupShow: true });
+                }
+                else if (res.data === -1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: true });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: false });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 0) {
                     this.handleCancelAddProduct();
                     this.props.getProducts(DataTypes.PRODUCTS);
                 }
             }).catch(err => console.log(err));
         }
         else {
+            this.setState({ hideLodingImgOnSave: false });
             product().update(productToAdd).then((res) => {
-                if (res.data !== "") {
+                this.setState({ hideLodingImgOnSave: true });
+                if (res.data === -500) {
+                    this.setState({ alertBigImageUploadErrorPopupShow: true });
+                }
+                else if (res.data === -1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: true });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: false });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 0) {
                     this.handleCancelAddProduct();
                     this.props.getProducts(DataTypes.PRODUCTS);
                 }
@@ -168,7 +198,8 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
         addProduct.imageSrc = "";
         this.setState({
             addEditProduct: addProduct,
-            addProductShow: false
+            addProductShow: false,
+            hideLodingImgOnSave: true
         })
     }
 
@@ -183,6 +214,12 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
             this.props.getProducts(DataTypes.PRODUCTS);
             this.props.getCategories(DataTypes.CATEGORIES);
         }
+        else if (key === "categories") {
+            this.props.getCategories(DataTypes.CATEGORIES, 1, 10);
+        }
+        this.setState({ addCategoryShow: false, addProductShow: false });
+        this.handleCancelAddProduct();
+        this.handleCancelAddCategory();
     }
 
     handleShowConfirmDeleteProduct = (id) => {
@@ -232,7 +269,9 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
     }
 
     handleAddCategoryClick = () => {
-        this.setState({ addCategoryShow: true });
+        let addCategory = this.state.addEditCategory;
+        addCategory.faClassSelected = true;
+        this.setState({ addCategoryShow: true, addEditCategory: addCategory });
     }
 
     handleStartEditCategory = (id) => {
@@ -242,7 +281,10 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
             categoryToEdit.name = res.data.name;
             categoryToEdit.faClass = res.data.faClass;
             categoryToEdit.imageSrc = res.data.imageSrc;
-            if (!categoryToEdit.faClass) {
+            if (res.data.faClass) {
+                categoryToEdit.faClassSelected = true;
+            }
+            else {
                 categoryToEdit.faClassSelected = false;
             }
             this.setState({
@@ -282,18 +324,48 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
         }
 
         if (this.state.addEditCategory.id === 0) {
+            this.setState({ hideLodingImgOnSave: false });
             category().create(categoryToAdd).then((res) => {
-                if (res.data !== 0) {
+                this.setState({ hideLodingImgOnSave: true });
+                if (res.data === -500) {
+                    this.setState({ alertBigImageUploadErrorPopupShow: true });
+                }
+                else if (res.data === -1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: true });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: false });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 0) {
                     this.handleCancelAddCategory();
-                    this.props.getCategories(DataTypes.CATEGORIES);
+                    this.props.getCategories(DataTypes.CATEGORIES, 1, 10);
                 }
             }).catch(err => console.log(err));
         }
         else {
+            this.setState({ hideLodingImgOnSave: false });
             category().update(categoryToAdd).then((res) => {
-                if (res.data !== "") {
+                this.setState({ hideLodingImgOnSave: true });
+                if (res.data === -500) {
+                    this.setState({ alertBigImageUploadErrorPopupShow: true });
+                }
+                else if (res.data === -1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: true });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 1) {
+                    //Nude image detected.
+                    this.setState({ alertNudeImagePopupIsFemale: false });
+                    this.setState({ alertNudeImagePopupShow: true });
+                }
+                else if (res.data === 0) {
                     this.handleCancelAddCategory();
-                    this.props.getCategories(DataTypes.CATEGORIES);
+                    this.props.getCategories(DataTypes.CATEGORIES, 1, 10);
                 }
             }).catch(err => console.log(err));
         }
@@ -314,7 +386,8 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
         addCategory.imageSrc = "";
         this.setState({
             addEditCategory: addCategory,
-            addCategoryShow: false
+            addCategoryShow: false,
+            hideLodingImgOnSave: true
         })
     }
 
@@ -329,7 +402,7 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
                     this.setState({ alertCantDeleteCategoryShow: true });
                 }
                 else {
-                    this.props.getCategories(DataTypes.CATEGORIES);
+                    this.props.getCategories(DataTypes.CATEGORIES, 1, 10);
                 }
             }).catch((err) => console.log(err));
             this.setState({
@@ -380,6 +453,8 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
                 <AlertPopupConfirm alertShow={this.state.alertConfirmDeleteProductShow} headerText="Delete" text="Are you sure to want to delete? This will delete all orders associated with this product." alertCloseClick={this.handleCancelDeleteProductClick} alertOkClick={this.handleDeleteProduct} alertCancelClick={this.handleCancelDeleteProductClick} />
                 <AlertPopupConfirm alertShow={this.state.alertConfirmDeleteCategoryShow} headerText="Delete" text="Are you sure to want to delete?" alertCloseClick={this.handleCancelDeleteCategoryClick} alertOkClick={this.handleDeleteCategory} alertCancelClick={this.handleCancelDeleteCategoryClick} />
                 <AlertPopupOk alertShow={this.state.alertCantDeleteCategoryShow} headerText="Delete" text="Can't delete category because there are products attached to it." alertCloseClick={() => this.setState({ alertCantDeleteCategoryShow: false })} alertOkClick={() => this.setState({ alertCantDeleteCategoryShow: false })} okBtnVariant="danger" />
+                <AlertPopupOk alertShow={this.state.alertNudeImagePopupShow} headerText="Nude image detected! WTF!" text={this.state.alertNudeImagePopupIsFemale ? "Female nude image detected! Mate, do you have a girlfriend?" : "Male nude image detected. Are you gay?"} alertCloseClick={() => this.setState({ alertNudeImagePopupShow: false })} alertOkClick={() => this.setState({ alertNudeImagePopupShow: false })} okBtnVariant="danger" />
+                <AlertPopupOk alertShow={this.state.alertBigImageUploadErrorPopupShow} headerText="Invalid image size" text="Image file size exceeds 1mb. Choose another image" alertCloseClick={() => this.setState({ alertBigImageUploadErrorPopupShow: false })} alertOkClick={() => this.setState({ alertBigImageUploadErrorPopupShow: false })} okBtnVariant="danger" />
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 text-center">
@@ -424,7 +499,7 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
                                                         </td>
                                                         <td className="td2AddProduct">
                                                             <select className="form-select" onChange={this.addProductCategoryChange} value={this.state.addEditProduct.categoryId}>
-                                                                {this.props.categories && this.props.categories.map((item, i) => {
+                                                                {this.props.categories && this.props.categories.categoryList && this.props.categories.categoryList.map((item, i) => {
                                                                     return (
                                                                         <option key={item.id} value={item.id}>{item.name}</option>
                                                                     );
@@ -470,7 +545,8 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
                                                     </tr>
                                                     <tr>
                                                         <td colSpan="2">
-                                                            <button type="button" className="btn btn-primary float-end ms-2 mt-2" onClick={() => this.handleAddEditProduct()}>{this.state.addEditProduct.id !== 0 ? "Save" : "Add"}</button>
+                                                            <button className={"btn btn-success float-end ms-2 mt-2" + (this.state.hideLodingImgOnSave ? " d-none" : "")}><img className="spinnerImgAddProduct" src={spinnerImg} alt="loading" /></button>
+                                                            <button type="button" className={"btn btn-primary float-end ms-2 mt-2" + (!this.state.hideLodingImgOnSave ? " d-none" : "")} onClick={() => this.handleAddEditProduct()}>{this.state.addEditProduct.id !== 0 ? "Save" : "Add"}</button>
                                                             <button type="button" className="btn btn-danger float-end mt-2" onClick={() => { this.handleCancelAddProduct() }}>Cancel</button>
                                                         </td>
                                                     </tr>
@@ -546,7 +622,8 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
                                                     </tr>
                                                     <tr>
                                                         <td colSpan="2">
-                                                            <button type="button" className="btn btn-primary float-end ms-2 mt-2" onClick={() => this.handleAddEditCategory()}>{this.state.addEditCategory.id !== 0 ? "Save" : "Add"}</button>
+                                                            <button className={"btn btn-success float-end ms-2 mt-2" + (this.state.hideLodingImgOnSave ? " d-none" : "")}><img className="spinnerImgAddProduct" src={spinnerImg} alt="loading" /></button>
+                                                            <button type="button" className={"btn btn-primary float-end ms-2 mt-2" + (!this.state.hideLodingImgOnSave ? " d-none" : "")} onClick={() => this.handleAddEditCategory()}>{this.state.addEditCategory.id !== 0 ? "Save" : "Add"}</button>
                                                             <button type="button" className="btn btn-danger float-end mt-2" onClick={() => { this.handleCancelAddCategory() }}>Cancel</button>
                                                         </td>
                                                     </tr>
@@ -566,6 +643,6 @@ export const AdminMain = withRouter(authWrapper(class extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        )
+        );
     }
-}))
+})

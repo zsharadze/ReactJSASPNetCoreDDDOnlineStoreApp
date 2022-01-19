@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { withRouter, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { authWrapper } from "./AuthWrapper";
 import { HomeBtn } from "../common/homeBtn";
 import CommonContext from '../common/commonContext';
 
-export const LoginPrompt = withRouter(authWrapper(class extends Component {
+export const LoginPrompt = authWrapper(class extends Component {
     static contextType = CommonContext;
 
     constructor(props) {
@@ -20,7 +20,7 @@ export const LoginPrompt = withRouter(authWrapper(class extends Component {
             defaulterrorMessage = "To place order please login."
         }
 
-        if(parsed.needAdminLogin){
+        if (parsed.needAdminLogin) {
             defaulterrorMessage = "You need to login with administrator in order to access that area"
         }
 
@@ -126,4 +126,4 @@ export const LoginPrompt = withRouter(authWrapper(class extends Component {
                 </div>
             </div>
         </div>
-}))
+})

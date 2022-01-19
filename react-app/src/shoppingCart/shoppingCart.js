@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import "bootstrap/dist/css/bootstrap.css";
-import "font-awesome/css/font-awesome.min.css";
 import { TopMenuIcons } from "../common/topmenuicons";
 import { HomeBtn } from "../common/homeBtn";
 import CommonContext from '../common/commonContext';
 import { authWrapper } from "../auth/AuthWrapper";
 import { order, promoCode } from "../data/api";
 import { AlertPopupOk } from '../common/alertPopupOk';
+import { DataTypes } from "../data/Types";
 
 export const ShoppingCart = authWrapper(class extends Component {
     static contextType = CommonContext;
@@ -25,13 +24,14 @@ export const ShoppingCart = authWrapper(class extends Component {
             alertText: "",
             alertBtnVariant: "",
             alertShow: false,
+            placeOrderButtonClass: "btn-success"
         };
     }
 
     componentDidMount = () => {
         if (this.context.shoppingCart.length > 0) {
             this.context.shoppingCart.forEach(element => {
-                this.props.getProduct(element.id, (product) => {
+                this.props.getProduct(DataTypes.PRODUCT, element.id, (product) => {
                     product.quantity = element.quantity;
                     let products = this.state.items;
                     products.push(product)
@@ -96,8 +96,12 @@ export const ShoppingCart = authWrapper(class extends Component {
     }
 
     placeOrder = () => {
+        if (this.state.placeOrderButtonClass === "btn-secondary") {
+            return;
+        }
+
         if (!this.props.isAuthenticated) {
-            this.props.history.push("/login/?fromOrder=true");
+            this.props.history("/login/?fromOrder=true");
         }
         else {
             let orderItems = [];
@@ -108,16 +112,28 @@ export const ShoppingCart = authWrapper(class extends Component {
                 orderItems.push(orderItem);
             });
 
-            order().create(orderItems, this.state.promoCode).then((res) => {
-                this.props.history.push("/orderplaced");
+            this.setState({ placeOrderButtonClass: "btn-secondary" }, () => {
+                order().create(orderItems, this.state.appliedPromoCode).then((res) => {
+                    if (res.data === -100) {
+                        this.setState({
+                            alertHeaderText: "Promo",
+                            alertText: "Promo Code is already used",
+                            alertBtnVariant: "danger",
+                            alertShow: true,
+                            promoCode: "",
+                        });
+                    }
+                    else {
+                        this.props.history("/orderplaced");
+                    }
+                })
+                    .catch((err) => {
+                        console.log("error occured " + err);
+                        this.setState({ placeOrderButtonClass: "btn-success" });
+                    });
             })
-                .catch((err) => {
-                    console.log("error occured " + err);
-                });
         }
     }
-
-
 
     handleApplyPromoCode = () => {
         promoCode().getByPromoCodeText(this.state.promoCode).then((res) => {
@@ -158,7 +174,7 @@ export const ShoppingCart = authWrapper(class extends Component {
 
     render() {
         return (
-            <React.Fragment>
+            <React.Fragment >
                 <AlertPopupOk alertShow={this.state.alertShow} headerText={this.state.alertHeaderText} text={this.state.alertText} okBtnVariant={this.state.alertBtnVariant} alertCloseClick={this.handleAlertOkCloseClick} alertOkClick={this.handleAlertOkCloseClick} />
                 <div className="container">
                     <div className="row">
@@ -243,7 +259,7 @@ export const ShoppingCart = authWrapper(class extends Component {
                                         }
                                         <br />
                                         <div className="text-center">
-                                            <button className="btn btn-success placeOrderBtn" onClick={() => this.placeOrder()}>Place Order</button>
+                                            <button className={"btn " + this.state.placeOrderButtonClass + " placeOrderBtn"} onClick={() => this.placeOrder()}>Place Order</button>
                                         </div>
                                     </div>
                                 </div>
@@ -252,7 +268,7 @@ export const ShoppingCart = authWrapper(class extends Component {
                         }
                     </div>
                 </div>
-            </React.Fragment>
+            </React.Fragment >
         )
     }
 })

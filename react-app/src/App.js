@@ -1,7 +1,5 @@
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ProductConnector } from './product/ProductConnector';
-import { Redirect } from 'react-router';
 import { dataStore } from './data/datastore'
 import { Provider } from "react-redux";
 import { AuthProviderImpl } from "./auth/AuthProviderImpl";
@@ -11,13 +9,13 @@ function App() {
     <Provider store={dataStore}>
       <BrowserRouter>
         <AuthProviderImpl>
-          <Switch>
-            <Route path={["/"]} component={ProductConnector} />
-            <Redirect to="/" />
-          </Switch>
+          <Routes>
+            <Route path="*" element={<ProductConnector />} />
+            <Route path="/products/*" element={<ProductConnector />} />
+          </Routes>
         </AuthProviderImpl>
       </BrowserRouter>
-    </Provider>
+    </Provider >
   );
 }
 

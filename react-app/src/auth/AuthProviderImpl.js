@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import { AuthContext } from "./AuthContext";
 import { loginUrl, registerUrl } from "../data/Urls";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "../common/withRouter";
 
 export const AuthProviderImpl = withRouter(class extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ export const AuthProviderImpl = withRouter(class extends Component {
         let tokenExpiration = localStorage.getItem('tokenExpiration');
         const currentDate = new Date();
         let tokenExpirationDate = new Date(tokenExpiration);
-        if (tokenExpirationDate > currentDate && isAuthenticated != null)
+        if (tokenExpirationDate > currentDate && isAuthenticated != null) {
             this.setState({
                 isAuthenticated: isAuthenticated,
                 userRole: localStorage.getItem('userRole'),
@@ -29,6 +29,10 @@ export const AuthProviderImpl = withRouter(class extends Component {
                 tokenExpiration: tokenExpiration,
                 userEmail: localStorage.getItem('userEmail'),
             });
+        }
+        else {
+            this.clearAuthCredentials(false);
+        }
     }
 
     authenticate = (credentials) => {
@@ -41,6 +45,7 @@ export const AuthProviderImpl = withRouter(class extends Component {
                     userRole: response.data.userRole,
                     userEmail: response.data.userEmail
                 })
+
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('tokenExpiration', response.data.tokenExpiration);
                 localStorage.setItem('isAuthenticated', true);
@@ -63,7 +68,7 @@ export const AuthProviderImpl = withRouter(class extends Component {
     }
 
     clearAuthCredentials = (redirect) => {
-        this.setState({ isAuthenticated: false, token: null, tokenExpiration: "", userRole: "" }, () => redirect ? this.props.history.push("/") : {});
+        this.setState({ isAuthenticated: false, token: null, tokenExpiration: "", userRole: "" }, () => redirect ? this.props.history("/") : {});
 
         localStorage.removeItem('token');
         localStorage.removeItem('tokenExpiration');

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from "../common/withRouter";
+import { Link } from "react-router-dom";
 import { authWrapper } from "./AuthWrapper";
 import { HomeBtn } from "../common/homeBtn";
 
@@ -55,7 +56,7 @@ export const RegisterPrompt = withRouter(authWrapper(class extends Component {
             .then(res => {
                 if (res.success) {
                     this.props.clearAuthCredentials(false);
-                    this.props.history.push("/login/?fromReg=true");
+                    this.props.history("/login/?fromReg=true");
                 }
                 else {
                     this.setState({ errorMessage: res.message });

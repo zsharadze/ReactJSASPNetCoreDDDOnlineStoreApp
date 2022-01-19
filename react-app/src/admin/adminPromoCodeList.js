@@ -11,6 +11,7 @@ export const AdminPromoCodeList = class extends Component {
             newPromoCodeGenerateQuantity: 1,
             hidePromoGenerateLodingImg: true,
             newPromoCodeDiscount: 10,
+            showOnlyUsed: false
         };
     }
 
@@ -24,15 +25,15 @@ export const AdminPromoCodeList = class extends Component {
             this.props.getPromoCodes(DataTypes.PROMOCODES);
         });
     }
-    
+
     handleDeletePromoCode = (id) => {
         promoCode().delete(id).then((response) => {
             this.props.getPromoCodes(DataTypes.PROMOCODES);
         });
     }
-    
-    handlePageIndexChangedPromoCodes = (pageIndex) => {
-        this.props.pageIndexChangedPromoCodes(pageIndex);
+
+    handlePageIndexChangedPromoCodes = (pageIndex, showOnlyUsed) => {
+        this.props.pageIndexChangedPromoCodes(pageIndex, showOnlyUsed);
         window.scrollTo(0, 0);
     }
 
@@ -53,9 +54,11 @@ export const AdminPromoCodeList = class extends Component {
         return (
             <React.Fragment>
                 <div className="generatePromoBtnWrapper">
-                    <button className="btn btn-primary" onClick={() => this.handleGeneratePromoCodes()}>Generate New Promo Codes</button>
+                    <button className="btn btn-primary" onClick={() => this.handleGeneratePromoCodes()}>Generate New</button>
                     <span style={{ marginLeft: "4px" }}> Quantity: </span> <input type="number" min="1" step="1" className="promoCodeQuantity" value={this.state.newPromoCodeGenerateQuantity} onChange={e => this.setState({ newPromoCodeGenerateQuantity: e.target.value })} />
                     <span style={{ marginLeft: "4px" }}> Discount $: </span><input type="number" min="1" step="1" className="promoCodeDiscount" value={this.state.newPromoCodeDiscount} onChange={e => this.setState({ newPromoCodeDiscount: e.target.value })} />
+                    <input type="checkbox" className="form-check-input showOnlyUsedPromoInput" id="showOnlyUsed" onChange={(e) => this.handlePageIndexChangedPromoCodes(1, e.target.checked)} />
+                    <label className="form-check-label noselect showOnlyUsedPromoLabel" htmlFor="showOnlyUsed">Show Only Used</label>
                     <img className={"spinnerImg" + (this.state.hidePromoGenerateLodingImg ? " d-none" : "")} src={spinnerImg} alt="loading" />
                 </div> <br />
                 {this.props.promocodes && this.props.promocodes.promoCodeList.length > 0 && this.props.promocodes.promoCodeList.map((item, i) => {

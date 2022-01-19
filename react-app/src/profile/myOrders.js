@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "../common/withRouter";
 import { HomeBtn } from "../common/homeBtn";
 import CommonContext from '../common/commonContext';
 import { DataTypes } from "../data/Types";
@@ -20,8 +20,8 @@ export const MyOrders = withRouter(class extends Component {
         let trs = [];
         orderItems.forEach(element => {
             trs.push(<tr key={element.id}>
-                <td onClick={() => this.props.history.push("details/?id=" + element.id)}><img className="orderItemProductImg" src={"data:image/jpeg;base64," + element.productImageSrc} alt={element.productId} style={{ cursor: "pointer" }} /></td>
-                <td onClick={() => this.props.history.push("details/?id=" + element.id)} style={{ cursor: "pointer" }} className="shoppingCartDescription"><span className="productNameText">{element.name}</span><br />{element.description}</td>
+                <td onClick={() => this.props.history("details/?id=" + element.productId)}><img className="orderItemProductImg" src={"data:image/jpeg;base64," + element.productImageSrc} alt={element.productId} style={{ cursor: "pointer" }} /></td>
+                <td onClick={() => this.props.history("details/?id=" + element.productId)} style={{ cursor: "pointer" }} className="shoppingCartDescription"><span className="productNameText">{element.name}</span><br />{element.description}</td>
                 <td><h4>{element.price}$</h4></td>
                 <td><h3>{element.quantity}</h3></td>
             </tr>);
