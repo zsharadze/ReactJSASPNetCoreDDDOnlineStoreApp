@@ -32,12 +32,18 @@ namespace ASPNetCoreWebApi.Repositories
             order.Subtotal = subTotal;
             if (!string.IsNullOrEmpty(promoCode))
             {
-                var promoCodeEntity = _context.PromoCodes.SingleOrDefault(x => x.PromoCodeText == promoCode);
+                var promoCodeEntity = _context.PromoCodes.SingleOrDefault(x => x.PromoCodeText == promoCode);                
                 if (promoCodeEntity != null)
                 {
+                    if (promoCodeEntity.IsUsed)
+                    {
+                        return -100;
+                    }
                     order.PromoCodeId = promoCodeEntity.Id;
                     var diff = order.Subtotal - promoCodeEntity.Discount;
                     order.SubtotalWithPromo = diff > 0 ? diff : 0;
+                    promoCodeEntity.IsUsed = true;
+                    _context.PromoCodes.Update(promoCodeEntity);
                 }
             }
 

@@ -69,7 +69,7 @@ namespace ASPNetCoreWebApi.Repositories
                 int totalCount = await products.CountAsync();
                 PagerHelper pagerHelper = new PagerHelper(totalCount, pageIndex.Value, pageSize.Value, summaryTextAdd);
                 result.Pager = pagerHelper.GetPager;
-                result.ProductList = await products.Skip((pagerHelper.CurrentPage - 1) * pagerHelper.PageSize).Take(pagerHelper.PageSize).ToListAsync();
+                result.ProductList = products.Skip((pagerHelper.CurrentPage - 1) * pagerHelper.PageSize).Take(pagerHelper.PageSize).ToList();
                 return result;
             }
             else

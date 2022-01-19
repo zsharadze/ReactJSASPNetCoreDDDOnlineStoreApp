@@ -1,6 +1,7 @@
 using ASPNetCoreWebApi.Domain.Contracts;
 using ASPNetCoreWebApi.Domain.Repositories;
 using ASPNetCoreWebApi.Domain.Services;
+using ASPNetCoreWebApi.Infrastructure;
 using ASPNetCoreWebApi.Mapping;
 using ASPNetCoreWebApi.Repositories;
 using AutoMapper;
@@ -21,7 +22,7 @@ namespace ASPNetCoreWebApi
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigin = "localhost-react";
+        readonly string MyAllowSpecificOrigins = "localhost-react";
 
         public Startup(IConfiguration configuration)
         {
@@ -32,10 +33,14 @@ namespace ASPNetCoreWebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy(MyAllowSpecificOrigin, builder =>
+            services.AddCors(o => o.AddPolicy(MyAllowSpecificOrigins, builder =>
             {
-                builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins("http://localhost", "http://localhost:3000")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
             }));
+
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -48,6 +53,9 @@ namespace ASPNetCoreWebApi
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IPromoCodeService, PromoCodeService>();
+            services.AddSingleton(Configuration);
+            services.AddTransient<NudeImageDetectorHelper>();
+            services.AddTransient<FileValidator>();
 
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
@@ -122,7 +130,7 @@ namespace ASPNetCoreWebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASPNetCoreWebApi v1"));
             }
 
-            app.UseCors(MyAllowSpecificOrigin);
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();

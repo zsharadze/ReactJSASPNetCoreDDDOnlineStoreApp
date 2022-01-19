@@ -28,9 +28,9 @@ namespace ASPNetCoreWebApi.Domain.Services
             return _repository.GeneratePromoCodes(quantity, discount);
         }
 
-        public Task<PromoCodesViewModel> GetAllItems(string searchText, int? pageSize, int? pageIndex)
+        public Task<PromoCodesViewModel> GetAllItems(string searchText, int? pageSize, int? pageIndex, bool? getOnlyUsed)
         {
-            return _repository.GetAllItems(searchText, pageSize, pageIndex);
+            return _repository.GetAllItems(searchText, pageSize, pageIndex, getOnlyUsed);
         }
 
         public Task<PromoCode> GetByPromoCodeText(string promoCodeText)

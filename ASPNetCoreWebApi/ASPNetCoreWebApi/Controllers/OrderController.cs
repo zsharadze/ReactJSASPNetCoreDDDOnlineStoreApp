@@ -15,7 +15,7 @@ namespace ASPNetCoreWebApi.Controllers
 {
 
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
@@ -48,10 +48,6 @@ namespace ASPNetCoreWebApi.Controllers
         [Authorize]
         public async Task<OrdersByUserViewModel> GetAllForCurrentUser(int? pageSize = 20, int? pageIndex = 1)
         {
-            if (pageIndex == null)
-            {
-                pageIndex = 1;
-            }
             var orders = await _orderService.GetAllItemsForCurrentUser(CurrentUserId, pageSize, pageIndex);
             return orders;
         }
@@ -61,10 +57,6 @@ namespace ASPNetCoreWebApi.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<OrdersViewModel> GetAll(int? pageSize = 20, int? pageIndex = 1)
         {
-            if (pageIndex == null)
-            {
-                pageIndex = 1;
-            }
             var orders = await _orderService.GetAllItems(pageSize, pageIndex);
             return orders;
         }

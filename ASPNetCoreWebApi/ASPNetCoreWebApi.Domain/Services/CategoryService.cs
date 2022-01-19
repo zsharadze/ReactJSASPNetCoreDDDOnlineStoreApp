@@ -1,6 +1,7 @@
 ﻿using ASPNetCoreWebApi.Domain;
 using ASPNetCoreWebApi.Domain.Contracts;
 using ASPNetCoreWebApi.Domain.Repositories;
+using ASPNetCoreWebApi.Domain.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,9 +21,9 @@ namespace ASPNetCoreWebApi.Domain.Services
             return _repository.Add(newItem);
         }
 
-        public Task<IEnumerable<Category>> GetAllItems()
+        public Task<CategoriesViewModel> GetAllItems(string searchText, int? pageSize, int? pageIndex)
         {
-            return _repository.GetAllItems();
+            return _repository.GetAllItems(searchText, pageSize, pageIndex);
         }
 
         public Task<Category> GetById(int id)

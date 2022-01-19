@@ -1,5 +1,7 @@
 ﻿using ASPNetCoreWebApi.Domain;
+using ASPNetCoreWebApi.Domain.Extensions;
 using ASPNetCoreWebApi.Domain.Repositories;
+using ASPNetCoreWebApi.Domain.ViewModels;
 using ASPNetCoreWebApi.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,6 +22,8 @@ namespace ASPNetCoreWebApi.Repositories
 
         public async Task<int> Add(Category newItem)
         {
+            if (!string.IsNullOrEmpty(newItem.FaClass))
+                newItem.FaClass = newItem.FaClass.Trim();
             _context.Categories.Add(newItem);
             try
             {
@@ -31,9 +35,50 @@ namespace ASPNetCoreWebApi.Repositories
             }
         }
 
-        public async Task<IEnumerable<Category>> GetAllItems()
+        public async Task<CategoriesViewModel> GetAllItems(string searchText, int? pageSize, int? pageIndex)
         {
-            return await _context.Categories.AsNoTracking().ToListAsync();
+            var result = new CategoriesViewModel();
+            result.CategoryList = new List<CategoryDto>();
+
+            var categories = _context.Categories.AsNoTracking().Include(x => x.Products).Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                FaClass = c.FaClass,
+                ImageSrc = c.ImageSrc,
+                ProductsCount = c.Products.Count
+            }).AsQueryable();
+            string summaryTextAdd = "";
+
+            if (searchText != null)
+            {
+                summaryTextAdd = $" (filtered from {categories.Count()} total entries)";
+            }
+
+            categories = categories.OrderBy(x => x.Name);
+
+            if (searchText != null)
+            {
+                categories = categories.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
+            }
+
+            if (pageSize == null || pageIndex == null)
+            {
+                result.CategoryList = await categories.ToListAsync();
+                return result;
+            }
+            else if (pageSize.HasValue && pageIndex.HasValue)
+            {
+                int totalCount = await categories.CountAsync();
+                PagerHelper pagerHelper = new PagerHelper(totalCount, pageIndex.Value, pageSize.Value, summaryTextAdd);
+                result.Pager = pagerHelper.GetPager;
+                result.CategoryList = categories.Skip((pagerHelper.CurrentPage - 1) * pagerHelper.PageSize).Take(pagerHelper.PageSize).ToList();
+                return result;
+            }
+            else
+            {
+                throw new Exception("pageSize or pageIndex parameter is null");
+            }
         }
 
         public async Task<Category> GetById(int id)
@@ -66,6 +111,8 @@ namespace ASPNetCoreWebApi.Repositories
 
         public async Task<Category> Update(Category item)
         {
+            if (!string.IsNullOrEmpty(item.FaClass))
+                item.FaClass = item.FaClass.Trim();
             var existing = await _context.Categories.AsNoTracking().SingleOrDefaultAsync(a => a.Id == item.Id);
             if (existing != null)
             {

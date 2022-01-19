@@ -48,7 +48,7 @@ namespace ASPNetCoreWebApi.Repositories
                 {
                     await _context.SaveChangesAsync();
                 }
-                catch (Exception ex)
+                catch
                 {
                     return false;
                 }
@@ -57,7 +57,7 @@ namespace ASPNetCoreWebApi.Repositories
             return true;
         }
 
-        public async Task<PromoCodesViewModel> GetAllItems(string searchText, int? pageSize, int? pageIndex)
+        public async Task<PromoCodesViewModel> GetAllItems(string searchText, int? pageSize, int? pageIndex, bool? getOnlyUsed)
         {
             var result = new PromoCodesViewModel();
             result.PromoCodeList = new List<PromoCode>();
@@ -65,7 +65,7 @@ namespace ASPNetCoreWebApi.Repositories
             var promoCodes = _context.PromoCodes.AsNoTracking().AsQueryable();
             string summaryTextAdd = "";
 
-            if (searchText != null)
+            if (searchText != null || getOnlyUsed.Value)
             {
                 summaryTextAdd = $" (filtered from {promoCodes.Count()} total entries)";
             }
@@ -75,6 +75,11 @@ namespace ASPNetCoreWebApi.Repositories
             if (searchText != null)
             {
                 promoCodes = promoCodes.Where(x => x.PromoCodeText == searchText);
+            }
+
+            if (getOnlyUsed.Value)
+            {
+                promoCodes = promoCodes.Where(x => x.IsUsed);
             }
 
             if (pageSize == null || pageIndex == null)

@@ -1,5 +1,7 @@
 ﻿using ASPNetCoreWebApi.Domain;
 using ASPNetCoreWebApi.Domain.Contracts;
+using ASPNetCoreWebApi.Domain.ViewModels;
+using ASPNetCoreWebApi.Infrastructure;
 using ASPNetCoreWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,21 +13,24 @@ using System.Threading.Tasks;
 namespace ASPNetCoreWebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-
-        public CategoryController(ICategoryService categoryService)
+        private readonly NudeImageDetectorHelper _nudeImageDetectorHelper;
+        private readonly FileValidator _fileValidator;
+        public CategoryController(ICategoryService categoryService, NudeImageDetectorHelper nudeImageDetectorHelper, FileValidator fileValidator)
         {
             _categoryService = categoryService;
+            _nudeImageDetectorHelper = nudeImageDetectorHelper;
+            _fileValidator = fileValidator;
         }
 
         // GET: Category/GetAll
         [HttpGet]
-        public async Task<IEnumerable<Category>> GetAll()
+        public async Task<CategoriesViewModel> GetAll(string searchText = null, int? pageSize = null, int? pageIndex = 1)
         {
-            var categories = await _categoryService.GetAllItems();
+            var categories = await _categoryService.GetAllItems(searchText, pageSize, pageIndex);
             return categories;
         }
 
@@ -45,15 +50,44 @@ namespace ASPNetCoreWebApi.Controllers
             {
                 throw new Exception("FaClass and ImageSrc both can't be null");
             }
-            return await _categoryService.Add(category);
+
+            if (!string.IsNullOrEmpty(category.ImageSrc))
+            {
+                byte[] imageBytes = Convert.FromBase64String(category.ImageSrc);
+                if (!_fileValidator.ValidSize(imageBytes.Length))
+                {
+                    return -500;
+                }
+                var nudityId = await _nudeImageDetectorHelper.IsNudeImage(imageBytes);
+                if (nudityId != 0)
+                {
+                    return nudityId;
+                }
+            }
+            await _categoryService.Add(category);
+            return 0;
         }
 
         // PUT: Category/Edit
         [HttpPut]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<Category> Edit([FromBody] Category category)
+        public async Task<int> Edit([FromBody] Category category)
         {
-            return await _categoryService.Update(category);
+            byte[] imageBytes = Convert.FromBase64String(category.ImageSrc);
+            if (!_fileValidator.ValidSize(imageBytes.Length))
+            {
+                return -500;
+            }
+            if (!string.IsNullOrEmpty(category.ImageSrc))
+            {
+                var nudityId = await _nudeImageDetectorHelper.IsNudeImage(imageBytes);
+                if (nudityId != 0)
+                {
+                    return nudityId;
+                }
+            }
+            await _categoryService.Update(category);
+            return 0;
         }
 
         // DELETE: Category/Delete/?id=5

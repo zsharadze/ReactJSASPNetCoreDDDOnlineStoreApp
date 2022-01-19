@@ -11,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace ASPNetCoreWebApi.Controllers
 {
-
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     public class PromoCodeController : Controller
     {
         private readonly IPromoCodeService _promoCodeService;
@@ -26,14 +25,9 @@ namespace ASPNetCoreWebApi.Controllers
         // GET: PromoCode/GetAll/?id=5
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<PromoCodesViewModel> GetAll(string searchText = null, int? pageSize = 20, int? pageIndex = 1)
+        public async Task<PromoCodesViewModel> GetAll(string searchText = null, int? pageSize = 20, int? pageIndex = 1, bool? getOnlyUsed = false)
         {
-            if (pageIndex == null)
-            {
-                pageIndex = 1;
-            }
-
-            return await _promoCodeService.GetAllItems(searchText, pageSize, pageIndex);
+            return await _promoCodeService.GetAllItems(searchText, pageSize, pageIndex, getOnlyUsed);
         }
 
         // GET: PromoCode/GetByPromoCodeText/?promoCodeText=...
