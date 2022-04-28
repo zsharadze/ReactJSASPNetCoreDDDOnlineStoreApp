@@ -192,7 +192,6 @@ export const ProductConnector = authWrapper(withRouter(connect(mapStateToProps, 
     }
 )))
 
-
 function RequireAuth({ children, redirectTo, props }) {
     let isAdminAuthenticated = localStorage.getItem('isAuthenticated') && localStorage.getItem('userRole') === "Admin";
     return isAdminAuthenticated ? children : <Navigate to={redirectTo} {...props} />;

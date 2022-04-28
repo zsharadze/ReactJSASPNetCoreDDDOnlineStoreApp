@@ -15,6 +15,15 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "Environments-Production": {
+        "commandName": "Project",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "applicationUrl": "http://18.197.248.204:1000",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Production"
+        }
       }
     },
     "ASPNetCoreWebApi": {
@@ -22,7 +31,7 @@
       "dotnetRunMessages": "true",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "applicationUrl": "http://18.197.248.204:9090;http://reactjsonlinestore-env.eba-yp2rtnaq.eu-central-1.elasticbeanstalk.com:9090",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }

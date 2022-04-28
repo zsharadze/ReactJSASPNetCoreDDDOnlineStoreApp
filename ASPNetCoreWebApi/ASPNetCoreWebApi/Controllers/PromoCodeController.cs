@@ -32,7 +32,6 @@ namespace ASPNetCoreWebApi.Controllers
 
         // GET: PromoCode/GetByPromoCodeText/?promoCodeText=...
         [HttpGet]
-        [Authorize]
         public async Task<PromoCode> GetByPromoCodeText(string promoCodeText)
         {
             return await _promoCodeService.GetByPromoCodeText(promoCodeText);

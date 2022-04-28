@@ -35,7 +35,7 @@ namespace ASPNetCoreWebApi
         {
             services.AddCors(o => o.AddPolicy(MyAllowSpecificOrigins, builder =>
             {
-                builder.WithOrigins("http://localhost", "http://localhost:3000")
+                builder.WithOrigins("http://localhost", "http://localhost:3000", "http://18.197.248.204", "http://reactjsonlinestore-env.eba-yp2rtnaq.eu-central-1.elasticbeanstalk.com")
                        .AllowAnyMethod()
                        .AllowAnyHeader()
                        .AllowCredentials();

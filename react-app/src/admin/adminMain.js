@@ -82,9 +82,9 @@ export const AdminMain = authWrapper(class extends Component {
     }
 
     handleAddProductClick = () => {
-        if (this.props.categories.length > 0) {
+        if (this.props.categories.categoryList.length > 0) {
             let addProduct = this.state.addEditProduct;
-            addProduct.categoryId = Number(this.props.categories[0].id);
+            addProduct.categoryId = Number(this.props.categories.categoryList[0].id);
             this.setState({ addEditProduct: addProduct });
         }
         this.setState({ addProductShow: true });
@@ -124,6 +124,7 @@ export const AdminMain = authWrapper(class extends Component {
         if (this.state.addEditProduct.id === 0) {
             this.setState({ hideLodingImgOnSave: false });
             product().create(productToAdd).then((res) => {
+                
                 this.setState({ hideLodingImgOnSave: true });
                 if (res.data === -500) {
                     this.setState({ alertBigImageUploadErrorPopupShow: true });

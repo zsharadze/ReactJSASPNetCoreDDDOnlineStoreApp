@@ -20,6 +20,14 @@ html {
   display: inline !important;
 }
 
+@media only screen and (max-width: 600px) {
+  .searchInput {
+    max-width: 151px !important;
+    width: auto !important;
+    display: inline !important;
+  }
+} 
+
 .searchBtnGroup {
   margin-left: 5px;
 }
